@@ -32,12 +32,12 @@ class wp_plugin_on_the_fly {
 			'Create Plugin',
 			'manage_options',
 			'wp_plugin_on_the_fly',
-			array( $this, 'page_create_plugin_page' ) );
+			array( $this, 'create_plugin_admin_page' ) );
 
 	}
 
 
-	public function page_create_plugin_page(){
+	public function create_plugin_admin_page(){
 
 		//TODO - the usual sanitize, validate, nonce etc.
 
@@ -52,32 +52,44 @@ class wp_plugin_on_the_fly {
 				print 'Sorry, your nonce did not verify.';
 				exit;
 			}
+			else {
+			    echo "<pre>";print_r( $_POST );echo "</pre>";
+            }
 
 			$plugin_name 	= filter_var( $_POST['plugin_name'], FILTER_SANITIZE_STRING );
 			$plugin_purpose = filter_var( $_POST['plugin_purpose'], FILTER_SANITIZE_STRING );
 			$author_name 	= filter_var( $_POST['author_name'], FILTER_SANITIZE_STRING );
 			$url_author		= filter_var( $_POST['url_author'], FILTER_SANITIZE_STRING );
 			$url_plugin 	= filter_var( $_POST['url_plugin'], FILTER_SANITIZE_STRING );
+			$plugin_extras	= filter_var( $_POST['plugin_extras'], FILTER_SANITIZE_STRING );
 
 
-			$plugin_folder_name 	= strtolower( $plugin_name );
+            // CREATE plugin folder with base plugin file
+			$plugin_folder_name 	= trim( strtolower( $plugin_name ) );
 			$plugin_folder_name 	= str_replace( ' ', '_' , $plugin_folder_name );
+			mkdir( $this->get_plugins_dir() . $plugin_folder_name . '/' );
 
-			// CREATE plugin folder with base plugin file
-			mkdir( $this->wpplg_get_plugins_dir() . $plugin_folder_name . '/' );
+            $placeholders = array('{PLUGIN_NAME}', '{PLUGIN_PURPOSE}', '{PLUGIN_AUTHOR}', '{URL_AUTHOR}', '{URL_PLUGIN}', '{CLASS_NAME}' );
+            $replacements = array( $plugin_name, $plugin_purpose, $author_name, $url_author, $url_plugin, $plugin_folder_name );
 
 
-			// Copy base file, replace placeholders and then put data into new base plugin file
-			$plugin_base_sample_file = plugin_dir_path( __FILE__ ) . 'templates/plugin_base_page.php';
-			$file = file_get_contents( $plugin_base_sample_file );
+			switch( $plugin_extras ){
 
-			$placeholders = array( '{PLUGIN_NAME}' , '{PLUGIN_PURPOSE}' , '{PLUGIN_AUTHOR}', '{URL_AUTHOR}' , '{URL_PLUGIN}' );
-			$replacements = array( $plugin_name , $plugin_purpose , $author_name, $url_author, $url_plugin );
+				case 'base_class':
+                    $file = $this->replace_placeholders( $placeholders, $replacements, 'plugin_base_page_with_class.php' );
+					break;
 
-			$file = str_replace( $placeholders, $replacements, $file );
+				case 'base_class_admin_page':
+                    $file = $this->replace_placeholders( $placeholders, $replacements, 'plugin_base_with_admin_page.php' );
+					break;
 
-			$file_path = $this->wpplg_get_plugins_dir() . $plugin_folder_name . '/' . $plugin_folder_name . '.php';
-			file_put_contents( $file_path , $file );
+
+				default:
+                    $file = $this->replace_placeholders( $placeholders, $replacements, 'plugin_base_page.php' );
+					break;
+			}
+
+			$this->create_plugin_base_file( $plugin_folder_name, $file );
 
 			$success = true;
 		}
@@ -138,7 +150,16 @@ class wp_plugin_on_the_fly {
 						</td>
 					</tr>
 
-
+                    <tr valign="top">
+						<th scope="row">Plugin extras</th>
+						<td>
+							<select name="plugin_extras"/>
+								<option value="nada">--None--</option>
+								<option value="base_class">Base class</option>
+								<option value="base_class_admin_page">Base class with 1 admin page in Tools section</option>
+							</select>
+						</td>
+					</tr>
 
 				</table>
 
@@ -154,9 +175,24 @@ class wp_plugin_on_the_fly {
 	}
 
 
-	private function wpplg_get_plugins_dir(){
+	private function get_plugins_dir(){
 		return $plugin_dir = ABSPATH . 'wp-content/plugins/';
 	}
+
+
+	private function replace_placeholders( $placeholders, $replacements, $tmpl_file ){
+        $plugin_base_sample_file    = plugin_dir_path(__FILE__) . 'templates/' . $tmpl_file;
+        $file                       = file_get_contents( $plugin_base_sample_file );
+        $file                       = str_replace($placeholders, $replacements, $file);
+        return $file;
+    }
+
+
+    private function create_plugin_base_file( $plugin_folder_name , $file_contents ){
+		$file_path = $this->get_plugins_dir() . $plugin_folder_name . '/' . $plugin_folder_name . '.php';
+		file_put_contents($file_path, $file_contents );
+	}
+
 
 }
 
