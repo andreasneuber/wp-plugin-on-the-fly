@@ -60,7 +60,7 @@ class wp_plugin_on_the_fly {
 			$plugin_purpose = filter_var( $_POST['plugin_purpose'], FILTER_SANITIZE_STRING );
 			$author_name 	= filter_var( $_POST['author_name'], FILTER_SANITIZE_STRING );
 			$url_author		= filter_var( $_POST['url_author'], FILTER_SANITIZE_STRING );
-			$url_plugin 	= filter_var( $_POST['url_plugin'], FILTER_SANITIZE_STRING );
+			$url_plugin		= filter_var( $_POST['url_plugin'], FILTER_SANITIZE_STRING );
 			$plugin_extras	= filter_var( $_POST['plugin_extras'], FILTER_SANITIZE_STRING );
 
 
