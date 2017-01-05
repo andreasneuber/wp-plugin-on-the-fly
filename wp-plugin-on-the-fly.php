@@ -16,9 +16,17 @@ defined( 'ABSPATH' ) or die( 'Dont be so direct..' );
 class wp_plugin_on_the_fly {
 
 
-	public $page_template_file_name;
-	public $page_template_name;
+	//public $page_template_file_name;
+	//public $page_template_name;
 
+	/*
+	$plugin_name 	= filter_var( $_POST['plugin_name'], FILTER_SANITIZE_STRING );
+	$plugin_purpose = filter_var( $_POST['plugin_purpose'], FILTER_SANITIZE_STRING );
+	$author_name 	= filter_var( $_POST['author_name'], FILTER_SANITIZE_STRING );
+	$url_author		= filter_var( $_POST['url_author'], FILTER_SANITIZE_STRING );
+	$url_plugin		= filter_var( $_POST['url_plugin'], FILTER_SANITIZE_STRING );
+	$plugin_extras	= filter_var( $_POST['plugin_extras'], FILTER_SANITIZE_STRING );
+	*/
 
 	public function __construct() {
 		add_action( 'admin_menu', array( $this, 'add_page_create_plugin_page' ) );
@@ -45,16 +53,7 @@ class wp_plugin_on_the_fly {
 
 		if($_POST){
 
-			if (
-				! isset( $_POST['create_wp_plugin_form_nonce'] )
-				|| ! wp_verify_nonce( $_POST['create_wp_plugin_form_nonce'], 'create_wp_plugin' )
-			) {
-				print 'Sorry, your nonce did not verify.';
-				exit;
-			}
-			else {
-			    echo "<pre>";print_r( $_POST );echo "</pre>";
-            }
+			$this->verify_nonce();
 
 			$plugin_name 	= filter_var( $_POST['plugin_name'], FILTER_SANITIZE_STRING );
 			$plugin_purpose = filter_var( $_POST['plugin_purpose'], FILTER_SANITIZE_STRING );
@@ -64,10 +63,8 @@ class wp_plugin_on_the_fly {
 			$plugin_extras	= filter_var( $_POST['plugin_extras'], FILTER_SANITIZE_STRING );
 
 
-            // CREATE plugin folder with base plugin file
-			$plugin_folder_name 	= trim( strtolower( $plugin_name ) );
-			$plugin_folder_name 	= str_replace( ' ', '_' , $plugin_folder_name );
-			mkdir( $this->get_plugins_dir() . $plugin_folder_name . '/' );
+			$plugin_folder_name = $this->create_plugin_dir( $plugin_name );
+
 
             $placeholders = array('{PLUGIN_NAME}', '{PLUGIN_PURPOSE}', '{PLUGIN_AUTHOR}', '{URL_AUTHOR}', '{URL_PLUGIN}', '{CLASS_NAME}' );
             $replacements = array( $plugin_name, $plugin_purpose, $author_name, $url_author, $url_plugin, $plugin_folder_name );
@@ -83,7 +80,6 @@ class wp_plugin_on_the_fly {
                     $file = $this->replace_placeholders( $placeholders, $replacements, 'plugin_base_with_admin_page.php' );
 					break;
 
-
 				default:
                     $file = $this->replace_placeholders( $placeholders, $replacements, 'plugin_base_page.php' );
 					break;
@@ -96,7 +92,6 @@ class wp_plugin_on_the_fly {
 		?>
 
 		<div class="wrap">
-
 			<?php
 			if( $success ){
 				$url = admin_url() . 'plugins.php'
@@ -191,6 +186,28 @@ class wp_plugin_on_the_fly {
     private function create_plugin_base_file( $plugin_folder_name , $file_contents ){
 		$file_path = $this->get_plugins_dir() . $plugin_folder_name . '/' . $plugin_folder_name . '.php';
 		file_put_contents($file_path, $file_contents );
+	}
+
+
+	private function verify_nonce(){
+		if (
+			! isset( $_POST['create_wp_plugin_form_nonce'] )
+			|| ! wp_verify_nonce( $_POST['create_wp_plugin_form_nonce'], 'create_wp_plugin' )
+		) {
+			print 'Sorry, your nonce did not verify.';
+			exit;
+		}
+		else {
+			echo "<pre>";print_r( $_POST );echo "</pre>";
+		}
+	}
+
+
+	private function create_plugin_dir( $plugin_name ){
+		$plugin_folder_name 	= trim( strtolower( $plugin_name ) );
+		$plugin_folder_name 	= str_replace( ' ', '_' , $plugin_folder_name );
+		mkdir( $this->get_plugins_dir() . $plugin_folder_name . '/' );
+		return $plugin_folder_name;
 	}
 
 
