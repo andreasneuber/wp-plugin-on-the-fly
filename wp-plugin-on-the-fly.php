@@ -15,18 +15,13 @@ defined( 'ABSPATH' ) or die( 'Dont be so direct..' );
 
 class wp_plugin_on_the_fly {
 
+	public $plugin_name;
+	public $plugin_purpose;
+	public $author_name;
+	public $url_author;
+	public $url_plugin;
+	public $plugin_extras;
 
-	//public $page_template_file_name;
-	//public $page_template_name;
-
-	/*
-	$plugin_name 	= filter_var( $_POST['plugin_name'], FILTER_SANITIZE_STRING );
-	$plugin_purpose = filter_var( $_POST['plugin_purpose'], FILTER_SANITIZE_STRING );
-	$author_name 	= filter_var( $_POST['author_name'], FILTER_SANITIZE_STRING );
-	$url_author		= filter_var( $_POST['url_author'], FILTER_SANITIZE_STRING );
-	$url_plugin		= filter_var( $_POST['url_plugin'], FILTER_SANITIZE_STRING );
-	$plugin_extras	= filter_var( $_POST['plugin_extras'], FILTER_SANITIZE_STRING );
-	*/
 
 	public function __construct() {
 		add_action( 'admin_menu', array( $this, 'add_page_create_plugin_page' ) );
@@ -47,30 +42,20 @@ class wp_plugin_on_the_fly {
 
 	public function create_plugin_admin_page(){
 
-		//TODO - the usual sanitize, validate, nonce etc.
-
 		$success = false;
 
-		if($_POST){
+		if( $_POST ){
 
 			$this->verify_nonce();
+			$this->sanitize_post_vars();
 
-			$plugin_name 	= filter_var( $_POST['plugin_name'], FILTER_SANITIZE_STRING );
-			$plugin_purpose = filter_var( $_POST['plugin_purpose'], FILTER_SANITIZE_STRING );
-			$author_name 	= filter_var( $_POST['author_name'], FILTER_SANITIZE_STRING );
-			$url_author		= filter_var( $_POST['url_author'], FILTER_SANITIZE_STRING );
-			$url_plugin		= filter_var( $_POST['url_plugin'], FILTER_SANITIZE_STRING );
-			$plugin_extras	= filter_var( $_POST['plugin_extras'], FILTER_SANITIZE_STRING );
-
-
-			$plugin_folder_name = $this->create_plugin_dir( $plugin_name );
-
+			$plugin_folder_name = $this->create_plugin_dir( $this->plugin_name );
 
             $placeholders = array('{PLUGIN_NAME}', '{PLUGIN_PURPOSE}', '{PLUGIN_AUTHOR}', '{URL_AUTHOR}', '{URL_PLUGIN}', '{CLASS_NAME}' );
-            $replacements = array( $plugin_name, $plugin_purpose, $author_name, $url_author, $url_plugin, $plugin_folder_name );
+            $replacements = array( $this->plugin_name, $this->plugin_purpose, $this->author_name, $this->url_author, $this->url_plugin, $plugin_folder_name );
 
 
-			switch( $plugin_extras ){
+			switch( $this->plugin_extras ){
 
 				case 'base_class':
                     $file = $this->replace_placeholders( $placeholders, $replacements, 'plugin_base_page_with_class.php' );
@@ -148,7 +133,7 @@ class wp_plugin_on_the_fly {
                     <tr valign="top">
 						<th scope="row">Plugin extras</th>
 						<td>
-							<select name="plugin_extras"/>
+							<select name="plugin_extras">
 								<option value="nada">--None--</option>
 								<option value="base_class">Base class</option>
 								<option value="base_class_admin_page">Base class with 1 admin page in Tools section</option>
@@ -208,6 +193,16 @@ class wp_plugin_on_the_fly {
 		$plugin_folder_name 	= str_replace( ' ', '_' , $plugin_folder_name );
 		mkdir( $this->get_plugins_dir() . $plugin_folder_name . '/' );
 		return $plugin_folder_name;
+	}
+
+
+	private function sanitize_post_vars(){
+		$this->plugin_name 		= filter_var( $_POST['plugin_name'], FILTER_SANITIZE_STRING );
+		$this->plugin_purpose 	= filter_var( $_POST['plugin_purpose'], FILTER_SANITIZE_STRING );
+		$this->author_name 		= filter_var( $_POST['author_name'], FILTER_SANITIZE_STRING );
+		$this->url_author		= filter_var( $_POST['url_author'], FILTER_SANITIZE_STRING );
+		$this->url_plugin		= filter_var( $_POST['url_plugin'], FILTER_SANITIZE_STRING );
+		$this->plugin_extras	= filter_var( $_POST['plugin_extras'], FILTER_SANITIZE_STRING );
 	}
 
 
