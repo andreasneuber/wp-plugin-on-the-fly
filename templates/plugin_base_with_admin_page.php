@@ -22,7 +22,7 @@ class {CLASS_NAME} {
 
     public function add_admin_page_{CLASS_NAME}(){
 
-        add_management_page(
+        add_options_page(
             '{PLUGIN_NAME}',
             '{PLUGIN_NAME}',
             'manage_options',
@@ -42,7 +42,7 @@ class {CLASS_NAME} {
             <div id="icon-plugins" class="icon32"></div>
             <h2>Plugin admin page</h2>
 
-            <form method="post" action="">
+            <form method="post" action="options.php">
 
                 <table class="form-table">
 

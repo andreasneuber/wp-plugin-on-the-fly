@@ -87,7 +87,7 @@ class wp_plugin_on_the_fly {
 		<div class="wrap">
 			<?php
 			$this->display_success_admin_message( $success );
-			
+
 			$settings = get_option( 'wp_plugin_on_the_fly_settings' );
 			?>
 
@@ -138,7 +138,7 @@ class wp_plugin_on_the_fly {
 							<select name="plugin_extras">
 								<option value="nada">--None--</option>
 								<option value="base_class">Base class</option>
-								<option value="base_class_admin_page">Base class with 1 admin page in Tools section</option>
+								<option value="base_class_admin_page">Base class with 1 admin page in Settings section</option>
 							</select>
 						</td>
 					</tr>
