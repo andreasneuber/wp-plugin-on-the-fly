@@ -17,6 +17,7 @@ class {CLASS_NAME} {
 
     public function __construct() {
         add_action( 'admin_menu', array( $this, 'add_admin_page_{CLASS_NAME}' ) );
+        add_action( 'admin_init', array( $this, 'register_{CLASS_NAME}_settings' ) );
     }
 
 
@@ -34,6 +35,8 @@ class {CLASS_NAME} {
 
 
     public function {CLASS_NAME}_admin_page(){
+        $op_val_1 = get_option( '{CLASS_NAME}_option_1' );
+        $op_val_2 = get_option( '{CLASS_NAME}_option_2' );
         ?>
 
 
@@ -43,13 +46,24 @@ class {CLASS_NAME} {
             <h2>Plugin admin page</h2>
 
             <form method="post" action="options.php">
+                <?php
+                settings_fields( '{CLASS_NAME}-option-group' );
+                do_settings_sections( '{CLASS_NAME}-option-group' );
+                ?>
 
                 <table class="form-table">
 
                     <tr valign="top">
                         <th scope="row">{CLASS_NAME} option 1</th>
                         <td>
-                            <input name="{CLASS_NAME}_option_1"/>
+                            <input type='text' name="{CLASS_NAME}_option_1" value="<?php echo $op_val_1; ?>" />
+                        </td>
+                    </tr>
+
+                    <tr valign="top">
+                        <th scope="row">{CLASS_NAME} option 2</th>
+                        <td>
+                            <input type='text' name="{CLASS_NAME}_option_2" value="<?php echo $op_val_2; ?>" />
                         </td>
                     </tr>
 
@@ -67,6 +81,10 @@ class {CLASS_NAME} {
     }
 
 
+    function register_{CLASS_NAME}_settings() {
+        register_setting( '{CLASS_NAME}-option-group', '{CLASS_NAME}_option_1' );
+        register_setting( '{CLASS_NAME}-option-group', '{CLASS_NAME}_option_2' );
+    }
 
 
 }
