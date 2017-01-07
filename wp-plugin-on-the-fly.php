@@ -49,6 +49,14 @@ class wp_plugin_on_the_fly {
 			$this->verify_nonce();
 			$this->sanitize_post_vars();
 
+			$wp_plugin_on_the_fly_settings = array(
+													'author_name' 	=> $this->author_name,
+													'url_author' 	=> $this->url_author,
+													'url_plugin'	=> $this->url_plugin
+													);
+			update_option( 'wp_plugin_on_the_fly_settings' , $wp_plugin_on_the_fly_settings );
+
+
 			$plugin_folder_name = $this->create_plugin_dir( $this->plugin_name );
 
             $placeholders = array('{PLUGIN_NAME}', '{PLUGIN_PURPOSE}', '{PLUGIN_AUTHOR}', '{URL_AUTHOR}', '{URL_PLUGIN}', '{CLASS_NAME}' );
@@ -72,7 +80,7 @@ class wp_plugin_on_the_fly {
 
 			$this->create_plugin_base_file( $plugin_folder_name, $file );
 
-			$success = true;
+			$success = true;	//TODO Improve "success"
 		}
 		?>
 
@@ -86,47 +94,48 @@ class wp_plugin_on_the_fly {
 				</div>
 				<?php
 			}
+
+			$settings = get_option( 'wp_plugin_on_the_fly_settings' );
 			?>
 
 			<div id="icon-plugins" class="icon32"></div>
 			<h2>Create your plugin</h2>
 
-			<form method="post" action="tools.php?page=wp_plugin_on_the_fly&ts=<?php echo time(); ?>">
-
+			<form method="post" action="tools.php?page=wp_plugin_on_the_fly" >
 				<table class="form-table">
 
 					<tr valign="top">
 						<th scope="row">Name of plugin</th>
 						<td>
-							<input name="plugin_name"/>
+							<input type='text' name="plugin_name"/>
 						</td>
 					</tr>
 
 					<tr valign="top">
 						<th scope="row">What does the plugin do?</th>
 						<td>
-							<input name="plugin_purpose"/>
+							<input type='text' name="plugin_purpose" size="100" />
 						</td>
 					</tr>
 
 					<tr valign="top">
 						<th scope="row">Name of author</th>
 						<td>
-							<input name="author_name"/>
+							<input type='text' name="author_name" value="<?php echo $settings['author_name']; ?>" />
 						</td>
 					</tr>
 
 					<tr valign="top">
 						<th scope="row">Author url</th>
 						<td>
-							<input name="url_author"/>
+							<input type='text' name="url_author" value="<?php echo $settings['url_author']; ?>" />
 						</td>
 					</tr>
 
 					<tr valign="top">
 						<th scope="row">Plugin url</th>
 						<td>
-							<input name="url_plugin"/>
+							<input type='text' name="url_plugin" value="<?php echo $settings['url_plugin']; ?>" />
 						</td>
 					</tr>
 
@@ -183,7 +192,8 @@ class wp_plugin_on_the_fly {
 			exit;
 		}
 		else {
-			echo "<pre>";print_r( $_POST );echo "</pre>";
+			//echo "<pre>";print_r( $_POST );echo "</pre>";
+			$this->display_print_r_nicely( $_POST );
 		}
 	}
 
@@ -204,6 +214,13 @@ class wp_plugin_on_the_fly {
 		$this->url_plugin		= filter_var( $_POST['url_plugin'], FILTER_SANITIZE_STRING );
 		$this->plugin_extras	= filter_var( $_POST['plugin_extras'], FILTER_SANITIZE_STRING );
 	}
+
+
+	private function display_print_r_nicely( $var ){
+		echo "<pre>";print_r( $var );echo "</pre>";
+	}
+
+
 
 
 }
