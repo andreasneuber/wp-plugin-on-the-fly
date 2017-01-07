@@ -73,6 +73,10 @@ class wp_plugin_on_the_fly {
                     $file = $this->replace_placeholders( $placeholders, $replacements, 'plugin_base_with_admin_page.php' );
 					break;
 
+				case 'base_class_admin_page_ajax':
+                    $file = $this->replace_placeholders( $placeholders, $replacements, 'plugin_base_with_admin_page_ajax.php' );
+					break;
+
 				default:
                     $file = $this->replace_placeholders( $placeholders, $replacements, 'plugin_base_page.php' );
 					break;
@@ -139,6 +143,7 @@ class wp_plugin_on_the_fly {
 								<option value="nada">--None--</option>
 								<option value="base_class">Base class</option>
 								<option value="base_class_admin_page">Base class with 1 admin page in Settings section</option>
+								<option value="base_class_admin_page_ajax">Base class with 1 admin page in Settings section - settings saved via AJAX</option>
 							</select>
 						</td>
 					</tr>
