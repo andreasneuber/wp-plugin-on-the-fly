@@ -86,15 +86,8 @@ class wp_plugin_on_the_fly {
 
 		<div class="wrap">
 			<?php
-			if( $success ){
-				$url = admin_url() . 'plugins.php'
-				?>
-				<div class="notice notice-success is-dismissible">
-					<?php echo "<p>Success! Visit <a href='{$url}' target='_blank'>Plugins > Installed Plugins</a> and activate your new plugin.</p>"; ?>
-				</div>
-				<?php
-			}
-
+			$this->display_success_admin_message( $success );
+			
 			$settings = get_option( 'wp_plugin_on_the_fly_settings' );
 			?>
 
@@ -218,6 +211,18 @@ class wp_plugin_on_the_fly {
 
 	private function display_print_r_nicely( $var ){
 		echo "<pre>";print_r( $var );echo "</pre>";
+	}
+
+
+	private function display_success_admin_message( $success ){
+		if( $success ){
+			$url = admin_url() . 'plugins.php'
+			?>
+			<div class="notice notice-success is-dismissible">
+				<?php echo "<p>Success! Visit <a href='{$url}' target='_blank'>Plugins > Installed Plugins</a> and activate your new plugin.</p>"; ?>
+			</div>
+			<?php
+		}
 	}
 
 
