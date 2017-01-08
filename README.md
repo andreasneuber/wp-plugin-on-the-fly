@@ -2,10 +2,10 @@
 Purpose of this plugin is to make creating a WP test plugin as easy as possible.
 
 ## Getting Started
-These instructions will help you with instalation and usage of plugin.
+These instructions will help you with installation and usage of plugin.
 
 ### Prerequisites
-- WordPress installation
+WordPress installation
 
 ### Installing
 On linux do this via terminal:
