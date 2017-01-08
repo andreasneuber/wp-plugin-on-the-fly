@@ -1,4 +1,4 @@
-# wp-plugin-on-the-fly
+# WP Plugin on-the-fly
 Purpose of this plugin is to make creating a WP test plugin as easy as possible.
 
 ## Getting Started
