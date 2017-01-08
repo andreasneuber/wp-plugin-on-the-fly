@@ -8,9 +8,9 @@ These instructions will help you with installation and usage of plugin.
 WordPress installation
 
 ### Installing
-On linux do this via terminal:
+On Linux do this via terminal:
 ```
-$ cd /path/to/wordpress/plugins
+$ cd /path/to/wp-content/plugins
 $ git clone https://github.com/andreasneuber/wp-plugin-on-the-fly.git
 ```
 - Go to "Plugins"
