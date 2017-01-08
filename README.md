@@ -19,5 +19,6 @@ $ git clone https://github.com/andreasneuber/wp-plugin-on-the-fly.git
 
 
 ## Usage
-Add your plugin name, description, author details in a WP backend form. 
+After plugin activation in admin menu "Tools" you will see a new item "Create Plugin". 
+Go there and add your plugin name, description, author details in a WP backend form. 
 Choose if plugin should have a admin page. Press "Save" and your new plugin will be created.
